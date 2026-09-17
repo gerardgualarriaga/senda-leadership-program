@@ -1,0 +1,11 @@
+# Material de trabajo y documentos internos: no se publican
+_origen/
+_herramientas/*
+!_herramientas/serve.ps1
+!_herramientas/iframe-test.html
+.claude/
+*.pdf
+IMAGENES.md
+DESIGN-SYSTEM.md
+Thumbs.db
+.DS_Store

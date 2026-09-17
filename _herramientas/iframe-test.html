@@ -1,0 +1,25 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Prueba iframe</title>
+<style>
+  body{ margin:0; font-family:system-ui; background:#eee; }
+  .wrap{ max-width:1100px; margin:40px auto; padding:0 16px; }
+  .embed{ position:relative; width:100%; aspect-ratio:16/9; }
+  .embed iframe{ position:absolute; inset:0; width:100%; height:100%; border:0; }
+  @media (max-width:767px), (max-aspect-ratio:6/5){ .embed{ aspect-ratio:auto; } .embed iframe{ position:static; height:100vh; } }
+</style>
+<div class="wrap">
+  <p>Texto antes del iframe.</p>
+  <div class="embed">
+    <iframe id="deck" src="/index.html" title="Leadership Program de SENDA" allow="fullscreen" allowfullscreen loading="lazy"></iframe>
+  </div>
+  <p>Texto después del iframe.</p>
+</div>
+<script>
+  window.addEventListener('message', function (e) {
+    if (!e.data || e.data.type !== 'senda-deck:height') return;
+    var f = document.getElementById('deck');
+    if (getComputedStyle(f).position === 'static') f.style.height = e.data.height + 'px';
+  });
+</script>

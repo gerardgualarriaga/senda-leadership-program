@@ -1,5 +1,7 @@
 # SENDA · Leadership Program
 
+**Publicada en <https://gerardgualarriaga.github.io/senda-leadership-program/>**
+
 Presentación web del Leadership Program de [SENDA](https://senda.site). Es HTML, CSS y JavaScript estáticos: no hay compilación ni dependencias que instalar.
 
 ## Verla en local
@@ -63,7 +65,7 @@ img/                imágenes WebP (inventario y prompts en el documento interno
 
 ```html
 <div class="senda-deck" style="position:relative;width:100%;aspect-ratio:16/9">
-  <iframe id="senda-deck" src="https://USUARIO.github.io/senda-leadership-program/"
+  <iframe id="senda-deck" src="https://gerardgualarriaga.github.io/senda-leadership-program/"
           title="Leadership Program de SENDA" allow="fullscreen" allowfullscreen loading="lazy"
           style="position:absolute;inset:0;width:100%;height:100%;border:0"></iframe>
 </div>

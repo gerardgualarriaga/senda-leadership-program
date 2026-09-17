@@ -55,6 +55,12 @@
   if (inIframe) document.documentElement.classList.add('is-embedded');
 
   function reduced() { return mqReduce.matches || !gsap; }
+  /* Quita la carga diferida de las imágenes de una diapositiva: al asignar
+     loading="eager" el navegador la descarga ya, sin esperar al scroll. */
+  function eager(slide) {
+    if (!slide) return;
+    [].forEach.call(slide.querySelectorAll('img[loading="lazy"]'), function (img) { img.loading = 'eager'; });
+  }
   function pad(n) { return n < 10 ? '0' + n : '' + n; }
   function clamp(i) { return Math.max(0, Math.min(N - 1, i)); }
   function themeOf(slide) {
@@ -431,6 +437,11 @@
     var next = slides[i];
     var dir = i > state.current ? 1 : -1;
     state.current = i;
+
+    /* En escenario todas las diapositivas ocupan el mismo hueco, así que la
+       carga diferida del navegador no siempre se dispara: se fuerza la de la
+       diapositiva actual y las vecinas. */
+    eager(next); eager(slides[i + 1]); eager(slides[i - 1]);
 
     updateHud(i);
     setHash(i);
@@ -825,7 +836,14 @@
     if (mqStage.addEventListener) mqStage.addEventListener('change', applyMode);
     else mqStage.addListener(applyMode);
     if ('ResizeObserver' in window) new ResizeObserver(postHeight).observe(document.body);
-    window.addEventListener('load', postHeight);
+    window.addEventListener('load', function () {
+      postHeight();
+      /* Con la página ya cargada y el navegador ocioso, se traen el resto de
+         imágenes: así ninguna diapositiva aparece sin su foto. */
+      var rest = function () { slides.forEach(eager); };
+      if ('requestIdleCallback' in window) requestIdleCallback(rest, { timeout: 4000 });
+      else setTimeout(rest, 2000);
+    });
     /* Si cambia el tamaño en escenario, las unidades de desplazamiento cambian:
        la diapositiva actual se reposiciona sin animación. */
     var resizeTimer;

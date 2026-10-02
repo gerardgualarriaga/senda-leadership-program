@@ -688,13 +688,29 @@
     $all('.slide--chapter .giant').forEach(function (giant) {
       var target = giant.getBoundingClientRect().width;
       if (!target) return;
-      $all('.giant__line', giant).forEach(function (line) {
+      var lines = $all('.giant__line', giant);
+      var sizes = lines.map(function (line) {
         line.style.fontSize = '';
         var base = parseFloat(getComputedStyle(line).fontSize);
-        var w = line.scrollWidth;
-        if (!w || !base) return;
-        line.style.fontSize = (base * (target / w)).toFixed(2) + 'px';
+        /* Ancho real del texto (no el de la caja, que ocupa toda la línea
+           aunque la palabra sea corta) */
+        var r = document.createRange();
+        r.selectNodeContents(line);
+        var w = r.getBoundingClientRect().width;
+        return w && base ? base * (target / w) : base;
       });
+      /* En escenario, las palabras cortas («Áreas», «clave») no pueden
+         crecer hasta salirse por arriba y por abajo: el bloque se limita al
+         60 % del alto del marco y, si se reduce, se centra. */
+      var k = 1;
+      if (state.mode === 'stage') {
+        var lh = parseFloat(getComputedStyle(lines[0]).lineHeight) / parseFloat(getComputedStyle(lines[0]).fontSize) || 0.86;
+        var total = sizes.reduce(function (a, s) { return a + s * lh; }, 0);
+        var maxH = frame.clientHeight * 0.6;
+        if (total > maxH) k = maxH / total;
+      }
+      lines.forEach(function (line, i) { line.style.fontSize = (sizes[i] * k).toFixed(2) + 'px'; });
+      giant.style.textAlign = k < 1 ? 'center' : '';
     });
   }
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitGiants);

@@ -745,9 +745,9 @@ html.is-flow #prev, html.is-flow #next{ display:none; }
   html.js .label{ font-size:.95cqw; }
   html.js .hint{ font-size:.9cqw; }
   html.js .eyebrow{ font-size:.95cqw; }
-  html.js .head{ gap:.7cqw; }
+  html.js .head{ gap:1.25cqw; }   /* aire para las tildes de las mayúsculas (Á, Ó) */
   /* En los bloques de texto el eyebrow va más pegado al título que el resto */
-  html.js .text > .eyebrow{ margin-bottom:-.9cqw; }
+  html.js .text > .eyebrow{ margin-bottom:-.35cqw; }
   html.js .eyebrow--cover{ font-size:1.15cqw; color:#fff; opacity:.86; }
   html.js .eyebrow--frame{ background:var(--bg); padding:0 1.2cqw; z-index:1; }
 
@@ -811,7 +811,7 @@ html.is-flow #prev, html.is-flow #next{ display:none; }
   /* El tamaño lo calcula el JS (fitGiants): cada línea ocupa justo el ancho
      útil del marco, así nunca se corta una letra ni queda un hueco raro. */
   html.js .slide--chapter .giant{ position:absolute; left:7cqw; right:7cqw; top:50%; transform:translateY(-50%); }
-  html.js .giant__line{ font-size:19.4cqw; line-height:.86; letter-spacing:-.05em; margin-left:-.055em; }
+  html.js .giant__line{ font-size:19.4cqw; line-height:.86; letter-spacing:-.035em; margin-left:-.055em; }   /* con -.05em la L y la A de «CLAVE» se tocaban */
 
   /* 05 · Definición */
   html.js #definicion .frame-line{ display:block; overflow:visible; }

@@ -49,6 +49,7 @@ img/                imágenes WebP (inventario y prompts en el documento interno
 
 ## Editar contenido
 
+- **Al publicar un cambio de CSS o JS**, sube el número `?v=` de sus enlaces en `index.html`: así los navegadores no siguen usando la versión guardada en caché (GitHub Pages la conserva 10 minutos).
 - **Textos:** directamente en `index.html`. Cada diapositiva es un `<section class="slide" data-slide>`.
 - **Imágenes:** sustituye el archivo en `img/` manteniendo el nombre (detalles en el documento interno `IMAGENES.md`).
 - **Posición en escritorio:** cada elemento `.abs` lleva variables inline (`--x`, `--y`, `--r`, `--b`, `--w`, `--h`) en porcentaje del ancho del marco.

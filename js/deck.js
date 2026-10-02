@@ -328,6 +328,34 @@
       tl.to(text, { fillOpacity: 1, duration: 0.7, ease: 'power1.out' }, 1.2);
     },
 
+    /* Objetivos: un plano de acento cruza cada ficha de izquierda a derecha y
+       la deja descubierta; después se traza el icono. Escalonado en diagonal
+       de lectura (fila a fila). */
+    goals: function (tl, slide) {
+      $all('.goal', slide).forEach(function (tile, i) {
+        var at = 0.3 + i * 0.12;
+        var wipe = tile.querySelector('.goal__wipe');
+        var content = $all('.goal__top, p', tile);
+        tl.set(content, { opacity: 0 }, 0);
+        tl.fromTo(wipe, { scaleX: 0, transformOrigin: '0% 50%' }, { scaleX: 1, duration: 0.42, ease: 'power3.in' }, at);
+        tl.set(content, { opacity: 1 }, at + 0.42);
+        tl.set(wipe, { transformOrigin: '100% 50%' }, at + 0.42);
+        tl.to(wipe, { scaleX: 0, duration: 0.6, ease: 'expo.out' }, at + 0.42);
+        var paths = drawables(tile.querySelector('.ico'));
+        if (paths.length) {
+          tl.fromTo(paths, { strokeDasharray: 1, strokeDashoffset: 1 },
+            { strokeDashoffset: 0, duration: 1, ease: 'power2.inOut', stagger: 0.05 }, at + 0.5);
+        }
+        var fills = $all('.ico .fill', tile);
+        if (fills.length) {
+          tl.fromTo(fills, { scale: 0, transformOrigin: '50% 50%' },
+            { scale: 1, duration: 0.5, ease: 'back.out(2)', stagger: 0.03 }, at + 0.9);
+        }
+        tl.fromTo(tile.querySelector('.goal__badge'), { rotation: -90, scale: 0.6 },
+          { rotation: 0, scale: 1, duration: 0.9, ease: 'expo.out', clearProps: 'transform' }, at + 0.42);
+      });
+    },
+
     structure: function (tl, slide) {
       var u = unit();
       $all('.fig', slide).forEach(function (fig, i) {
@@ -402,6 +430,37 @@
     });
     $all('.figure--cover', slide).forEach(function (g) {
       loops.push(gsap.to(g, { scale: 1.05, duration: 22, ease: 'sine.inOut', yoyo: true, repeat: -1, transformOrigin: '60% 40%' }));
+    });
+    /* Objetivos: se enciende uno tras otro, cada 2,6 s, al acabar la
+       entrada. El cursor manda: al pasar por una ficha se enciende esa y el
+       ciclo se detiene hasta que el cursor sale de la retícula. */
+    $all('.goals', slide).forEach(function (list) {
+      var tiles = $all('.goal', list);
+      if (!tiles.length) return;
+      var k = -1, paused = false, timer = null;
+      function show(n) { k = n; tiles.forEach(function (t, j) { t.classList.toggle('is-on', j === n); }); }
+      function step() { if (!paused) show((k + 1) % tiles.length); }
+      function over(e) {
+        var t = e.target.closest && e.target.closest('.goal');
+        if (!t) return;
+        paused = true;
+        show(tiles.indexOf(t));
+      }
+      function out() { paused = false; }
+      list.classList.add('is-live');
+      list.addEventListener('mouseover', over);
+      list.addEventListener('mouseleave', out);
+      /* Arranca cuando termina la entrada (más rápida en visitas repetidas) */
+      var enter = state.timelines[i];
+      var wait = enter ? Math.max(0, (enter.duration() - enter.time()) / enter.timeScale()) * 1000 : 0;
+      var start = setTimeout(function () { step(); timer = setInterval(step, 2600); }, wait + 150);
+      loops.push({ kill: function () {
+        clearTimeout(start); clearInterval(timer);
+        list.removeEventListener('mouseover', over);
+        list.removeEventListener('mouseleave', out);
+        list.classList.remove('is-live');
+        tiles.forEach(function (t) { t.classList.remove('is-on'); });
+      } });
     });
     if (slide.getAttribute('data-scene') === 'chapter' && state.mode === 'stage') {
       var u = unit();
@@ -838,7 +897,7 @@
       gsap.set(curtain, { clearProps: 'transform,backgroundColor' });
       /* Sólo las propiedades que animamos: el atributo style de muchos
          elementos lleva además sus variables de posición (--x, --y…). */
-      var animated = $all('[data-anim], [data-anim] *, .giant__line, .ch, .k, .k-stitch, .timeline__line path, .phase__node, .phase__num, .phase__name, .numeral text, .manifest__num, .manifest__words li, .fig, .session, .session__fill, [data-slide]');
+      var animated = $all('[data-anim], [data-anim] *, .giant__line, .ch, .k, .k-stitch, .timeline__line path, .phase__node, .phase__num, .phase__name, .numeral text, .manifest__num, .manifest__words li, .fig, .session, .session__fill, .goal__wipe, .goal__top, .goal > p, .goal__badge, [data-slide]');
       gsap.set(animated, { clearProps: 'transform,opacity,visibility,clipPath,strokeDasharray,strokeDashoffset,fillOpacity,letterSpacing,height' });
     }
     $all('[data-depth]').forEach(function (el) { el.style.translate = ''; });

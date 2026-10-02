@@ -351,11 +351,102 @@ a{ color:inherit; }
   text-wrap:pretty;
 }
 
-/* ── 08 · Objetivos ───────────────────────────────────────────────────── */
-.goals{ display:grid; grid-template-columns:1fr; gap:1.8rem; counter-reset:none; }
-.goal__top{ display:flex; align-items:center; gap:.9rem; margin-bottom:.5rem; }
-.goal__num{ font-weight:300; font-size:var(--fs-num); line-height:.9; font-variant-numeric:tabular-nums; }
-.goal .ico{ width:3rem; height:3rem; }
+/* ── 08–09 · Objetivos ────────────────────────────────────────────────── */
+/* Retícula de filetes, como las fichas de senda.site. Cada objetivo lleva
+   un número en contorno y su icono en un círculo con una órbita de trazos
+   que gira despacio. El JS va encendiendo un objetivo tras otro (negativo
+   completo: fondo de acento y texto en contraste); al pasar el cursor se
+   enciende el que está debajo. Sin JS, el negativo funciona con :hover. */
+.slide--dark .goals{
+  --line:var(--hair-light); --n:var(--pink);
+  --on-bg:var(--pink); --on-fg:var(--ink); --on-n:var(--ink);
+  --badge:var(--pink); --on-badge:var(--ink); --on-ico:var(--pink);
+}
+.slide--pink .goals{
+  --line:rgba(11,11,12,.24); --n:var(--ink);
+  --on-bg:var(--ink); --on-fg:#fff; --on-n:var(--pink);
+  --badge:var(--ink); --on-badge:var(--pink); --on-ico:var(--ink);
+}
+.goals{
+  display:grid;
+  grid-template-columns:1fr;
+  border-top:1px solid var(--line);
+  border-left:1px solid var(--line);
+}
+.goal{
+  position:relative;
+  overflow:hidden;
+  isolation:isolate;
+  display:flex;
+  flex-direction:column;
+  gap:1rem;
+  padding:1.3rem 1.2rem 1.5rem;
+  border-right:1px solid var(--line);
+  border-bottom:1px solid var(--line);
+  transition:color .55s var(--ease);
+}
+/* Fondo del objetivo encendido: sube desde la base */
+.goal::before{
+  content:"";
+  position:absolute; inset:0;
+  z-index:-1;
+  background:var(--on-bg);
+  transform:scaleY(0);
+  transform-origin:center bottom;
+  transition:transform .7s var(--ease);
+}
+/* Barrido de entrada: un plano de acento cruza la ficha y la descubre */
+.goal__wipe{
+  position:absolute; inset:0;
+  z-index:3;
+  background:var(--n);
+  transform:scaleX(0);
+  pointer-events:none;
+}
+.goal__top{ display:flex; align-items:center; justify-content:space-between; gap:1rem; }
+.goal__num{
+  font-weight:700;
+  font-size:var(--fs-num);
+  line-height:.85;
+  letter-spacing:-.04em;
+  font-variant-numeric:tabular-nums;
+  color:transparent;
+  -webkit-text-stroke:1.5px var(--n);
+  transition:color .55s var(--ease), -webkit-text-stroke-color .55s var(--ease);
+}
+.goal__badge{
+  position:relative;
+  flex:0 0 auto;
+  display:grid; place-items:center;
+  width:3.6rem; height:3.6rem;
+  border-radius:50%;
+  border:1.5px solid var(--badge);
+  transition:background-color .55s var(--ease), border-color .55s var(--ease), transform .7s var(--ease);
+}
+.goal__badge::before{
+  content:"";
+  position:absolute; inset:-.45rem;
+  border-radius:50%;
+  border:1px dashed var(--badge);
+  opacity:.5;
+  animation:goal-orbit 22s linear infinite;
+  transition:border-color .55s var(--ease), opacity .55s ease;
+}
+.goal:nth-child(even) .goal__badge::before{ animation-direction:reverse; }
+@keyframes goal-orbit{ to{ transform:rotate(360deg); } }
+.goal .ico{ width:60%; height:60%; stroke:var(--badge); transition:stroke .55s var(--ease); }
+.goal .ico .fill{ fill:var(--badge); transition:fill .55s var(--ease); }
+.goal p{ text-wrap:pretty; }
+
+/* Encendido (por el JS o, sin JS, con el cursor) */
+.goal.is-on, .goals:not(.is-live) .goal:hover{ color:var(--on-fg); }
+.goal.is-on::before, .goals:not(.is-live) .goal:hover::before{ transform:scaleY(1); }
+.goal.is-on .goal__num, .goals:not(.is-live) .goal:hover .goal__num{ color:var(--on-n); -webkit-text-stroke-color:var(--on-n); }
+.goal.is-on .goal__badge, .goals:not(.is-live) .goal:hover .goal__badge{ background:var(--on-badge); border-color:var(--on-badge); transform:rotate(-10deg) scale(1.06); }
+.goal.is-on .goal__badge::before, .goals:not(.is-live) .goal:hover .goal__badge::before{ border-color:var(--on-badge); opacity:.9; }
+.goal.is-on .ico, .goals:not(.is-live) .goal:hover .ico{ stroke:var(--on-ico); }
+.goal.is-on .ico .fill, .goals:not(.is-live) .goal:hover .ico .fill{ fill:var(--on-ico); }
+@media (prefers-reduced-motion:reduce){ .goal__badge::before{ animation:none; } }
 
 /* ── 09 · Tipografía cinética ─────────────────────────────────────────── */
 #cinetica{ min-height:88svh; justify-content:center; }
@@ -535,32 +626,6 @@ a{ color:inherit; }
 }
 @media (hover:hover){ .logos li:hover img{ opacity:1; transform:scale(1.06); } }
 
-/* ── 26 · Equipo ──────────────────────────────────────────────────────── */
-.team{ display:grid; grid-template-columns:1fr 1fr; gap:2rem 1rem; }
-.member{ display:flex; flex-direction:column; align-items:center; text-align:center; }
-.member__photo{ position:relative; width:100%; aspect-ratio:4 / 5; margin-bottom:.9rem; }
-.member__block{ position:absolute; left:10%; right:10%; top:22%; bottom:0; background:var(--black); }
-.member__photo img{
-  position:absolute; left:0; right:0; bottom:0;
-  width:100%; height:100%;
-  object-fit:contain; object-position:center bottom;
-  transform:translateY(calc(var(--dy,0) * 1%)) scale(var(--s,1));
-  transform-origin:center bottom;
-  filter:grayscale(1) contrast(1.04);
-  transition:filter var(--t2) ease;
-}
-@media (hover:hover){ .member:hover .member__photo img{ filter:none; } }
-.member__name{ font-weight:700; font-size:1.05rem; line-height:1.2; }
-.member__link{
-  font-size:.75rem;
-  text-decoration:underline;
-  text-underline-offset:.24em;
-  text-decoration-thickness:1px;
-  text-decoration-color:rgba(233,90,124,.45);
-  overflow-wrap:break-word;
-  transition:text-decoration-color var(--t1) ease, color var(--t1) ease;
-}
-.member__link:hover{ text-decoration-color:var(--pink); color:var(--pink); }
 
 /* ── 20 · Contacto ────────────────────────────────────────────────────── */
 #contacto{ min-height:90svh; justify-content:space-between; }
@@ -692,7 +757,7 @@ html.is-flow #prev, html.is-flow #next{ display:none; }
     content:"";
     position:absolute;
     top:2.4cqw; right:2.4cqw;
-    width:6.6cqw; height:3.8cqw;
+    width:6.6cqw; height:3.3cqw;   /* 6 × 3 puntos exactos: ninguna fila cortada */
     background-image:radial-gradient(circle, var(--pink) 0 .17cqw, transparent .2cqw);
     background-size:1.1cqw 1.1cqw;
     opacity:.5;
@@ -754,13 +819,14 @@ html.is-flow #prev, html.is-flow #next{ display:none; }
   html.js #definicion .frame-line rect{ fill:none; stroke:var(--pink); stroke-width:5; }
   html.js .statement{ border:0; padding:0; font-size:2.15cqw; line-height:1.55; }
 
-  /* 08 · Objetivos */
-  html.js .goals{ grid-template-columns:repeat(3, 1fr); grid-template-rows:1fr 1fr; gap:2.6cqw 4cqw; }
-  html.js .goal{ display:flex; flex-direction:column; gap:1cqw; }
-  html.js .goal__top{ gap:1.6cqw; margin:0; }
-  html.js .goal__num{ font-size:7.6cqw; }
-  html.js .goal .ico{ width:5.6cqw; height:5.6cqw; }
-  html.js .goal p{ font-size:1.55cqw; line-height:1.5; max-width:24cqw; }
+  /* 08–09 · Objetivos */
+  html.js .goals{ grid-template-columns:repeat(3, minmax(0, 1fr)); grid-template-rows:repeat(2, minmax(0, 1fr)); }
+  html.js .goal{ gap:2cqw; padding:1.9cqw 2.1cqw 2.1cqw; justify-content:flex-start; }
+  html.js .goal__top{ gap:1.2cqw; }
+  html.js .goal__num{ font-size:6.6cqw; -webkit-text-stroke-width:.12cqw; }
+  html.js .goal__badge{ width:5.4cqw; height:5.4cqw; border-width:.11cqw; }
+  html.js .goal__badge::before{ inset:-.65cqw; border-width:.08cqw; }
+  html.js .goal p{ font-size:1.48cqw; line-height:1.45; max-width:25cqw; }
 
   /* 09 · Cinética */
   html.js .kinetic{ position:absolute; inset:0; display:block; }
@@ -832,12 +898,6 @@ html.is-flow #prev, html.is-flow #next{ display:none; }
   html.js .logos li{ aspect-ratio:auto; min-height:0; overflow:hidden; }
   html.js .logos img{ width:auto; height:78%; max-width:66%; }
 
-  /* 26 · Equipo */
-  html.js .team{ grid-template-columns:repeat(4, 1fr); gap:3cqw; align-items:end; }
-  html.js .member__photo{ aspect-ratio:auto; height:29.5cqw; width:100%; margin-bottom:1.5cqw; }
-  html.js .member__block{ left:16%; right:16%; top:24%; }
-  html.js .member__name{ font-size:1.75cqw; }
-  html.js .member__link{ font-size:1cqw; margin-top:.3cqw; }
 
   /* 20 · Contacto */
   html.js #contacto .logo--full{ width:26cqw; }
@@ -882,7 +942,6 @@ html.is-flow #prev, html.is-flow #next{ display:none; }
   html.is-embedded #contacto{ min-height:min(180vw, 48rem); }
 }
 @media (min-width:560px) and (max-width:767px){
-  .team{ grid-template-columns:repeat(4, 1fr); }
   .goals{ grid-template-columns:1fr 1fr; }
 }
 

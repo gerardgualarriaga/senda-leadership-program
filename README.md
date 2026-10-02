@@ -36,7 +36,7 @@ Con `prefers-reduced-motion` activado se desactivan las animaciones y las transi
 ## Estructura
 
 ```
-index.html          27 diapositivas (HTML semántico, textos accesibles)
+index.html          26 diapositivas (HTML semántico, textos accesibles)
 css/fonts.css       Poppins autoalojada
 css/deck.css        estilos: base móvil + bloque de escenario 16:9
 js/deck.js          motor de la presentación

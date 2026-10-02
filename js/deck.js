@@ -148,17 +148,23 @@
     });
     $all('.k-letters, .k-drop').forEach(splitChars);
 
-    /* Navegación entre fases en cada diapositiva de fase */
-    var phaseStart = 10; // índice (base 0) de la diapositiva 11
+    /* Mapa de áreas y navegación entre áreas. Los destinos se calculan con
+       la posición real de cada diapositiva: añadir o quitar diapositivas no
+       rompe ningún enlace. */
+    var mapSlide = document.querySelector('[data-scene="phases"]');
+    var mapNum = slides.indexOf(mapSlide) + 1;            // base 1, como #/n
+    var areaSlides = $all('.slide--phase');
+    var areaNums = areaSlides.map(function (s) { return slides.indexOf(s) + 1; });
+    $all('.phase', mapSlide || document).forEach(function (btn, k) {
+      if (areaNums[k]) btn.setAttribute('data-goto', areaNums[k]);
+    });
     $all('.phase-nav').forEach(function (nav) {
-      var slideIndex = slides.indexOf(nav.closest('[data-slide]'));
-      var html = '<button type="button" class="phase-nav__back" data-goto="10">Fases</button>';
-      for (var p = 1; p <= 5; p++) {
-        var idx = phaseStart + p;
-        var current = (idx - 1) === slideIndex;
-        html += '<button type="button" data-goto="' + idx + '"' + (current ? ' aria-current="step"' : '') +
-                ' aria-label="Fase ' + p + '">' + p + '</button>';
-      }
+      var here = slides.indexOf(nav.closest('[data-slide]')) + 1;
+      var html = mapNum ? '<button type="button" class="phase-nav__back" data-goto="' + mapNum + '">Áreas</button>' : '';
+      areaNums.forEach(function (num, k) {
+        html += '<button type="button" data-goto="' + num + '"' + (num === here ? ' aria-current="step"' : '') +
+                ' aria-label="Área ' + (k + 1) + '">' + (k + 1) + '</button>';
+      });
       nav.innerHTML = html;
     });
 
@@ -322,6 +328,19 @@
       tl.to(text, { fillOpacity: 1, duration: 0.7, ease: 'power1.out' }, 1.2);
     },
 
+    structure: function (tl, slide) {
+      var u = unit();
+      $all('.fig', slide).forEach(function (fig, i) {
+        tl.fromTo(fig, { opacity: 0, y: 2 * u }, { opacity: 1, y: 0, duration: 0.9, ease: 'expo.out' }, 0.3 + i * 0.18);
+        countUp(tl, fig.querySelector('.k-count'), 0.3 + i * 0.18, 1.3);
+      });
+      tl.fromTo($all('.session', slide), { opacity: 0, y: 1.2 * u },
+        { opacity: 1, y: 0, duration: 0.6, ease: 'power3.out', stagger: 0.06 }, 0.6);
+      /* Las siete barras se llenan en secuencia: el recorrido del programa */
+      tl.fromTo($all('.session__fill', slide), { scaleX: 0 },
+        { scaleX: 1, duration: 0.42, ease: 'power2.inOut', stagger: 0.2 }, 1.1);
+    },
+
     manifest: function (tl, slide) {
       var u = unit();
       tl.fromTo(slide.querySelector('.manifest__num'), { opacity: 0, y: 2 * u },
@@ -454,6 +473,7 @@
     if (reduced()) {
       if (prev) prev.classList.remove('is-active');
       next.classList.add('is-active');
+      if (next.classList.contains('slide--chapter')) fitGiants();
       return;
     }
 
@@ -474,6 +494,7 @@
       }
       next.classList.add('is-active');
       gsap.set(next, { opacity: 1 });
+      if (next.classList.contains('slide--chapter')) fitGiants();
       playEnter(next);
     };
 
@@ -618,6 +639,15 @@
     });
   }
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitGiants);
+  /* El marco puede cambiar de tamaño sin que la ventana lo haga (iframe que
+     se ajusta, cambio de modo, emulación): se vuelve a ajustar siempre. */
+  if ('ResizeObserver' in window) {
+    var fitRaf = null;
+    new ResizeObserver(function () {
+      if (fitRaf) cancelAnimationFrame(fitRaf);
+      fitRaf = requestAnimationFrame(function () { fitRaf = null; fitGiants(); });
+    }).observe(frame);
+  }
 
   function enterStage() {
     state.mode = 'stage';
@@ -808,7 +838,7 @@
       gsap.set(curtain, { clearProps: 'transform,backgroundColor' });
       /* Sólo las propiedades que animamos: el atributo style de muchos
          elementos lleva además sus variables de posición (--x, --y…). */
-      var animated = $all('[data-anim], [data-anim] *, .giant__line, .ch, .k, .k-stitch, .timeline__line path, .phase__node, .phase__num, .phase__name, .numeral text, .manifest__num, .manifest__words li, [data-slide]');
+      var animated = $all('[data-anim], [data-anim] *, .giant__line, .ch, .k, .k-stitch, .timeline__line path, .phase__node, .phase__num, .phase__name, .numeral text, .manifest__num, .manifest__words li, .fig, .session, .session__fill, [data-slide]');
       gsap.set(animated, { clearProps: 'transform,opacity,visibility,clipPath,strokeDasharray,strokeDashoffset,fillOpacity,letterSpacing,height' });
     }
     $all('[data-depth]').forEach(function (el) { el.style.translate = ''; });

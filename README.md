@@ -22,7 +22,7 @@ Después abre <http://localhost:8767/>. La prueba del iframe está en <http://lo
 |---|---|---|
 | Avanzar / retroceder | → ← · espacio · AvPág RePág · rueda · clic en los bordes · deslizar en pantallas táctiles | Desplazamiento vertical |
 | Primera / última | Inicio · Fin | — |
-| Ir a una fase | Clic en la línea de fases (diap. 10) o en la barra de fases | Toque en la fase |
+| Ir a un área clave | Clic en el mapa de áreas (diap. 12) o en la barra de áreas | Toque en el área |
 | Pantalla completa | Botón ⛶ o tecla F | Botón ⛶ |
 | Enlace directo | `index.html#/12` | `index.html#/12` (salta a esa sección) |
 
@@ -36,7 +36,7 @@ Con `prefers-reduced-motion` activado se desactivan las animaciones y las transi
 ## Estructura
 
 ```
-index.html          20 diapositivas (HTML semántico, textos accesibles)
+index.html          27 diapositivas (HTML semántico, textos accesibles)
 css/fonts.css       Poppins autoalojada
 css/deck.css        estilos: base móvil + bloque de escenario 16:9
 js/deck.js          motor de la presentación
@@ -63,24 +63,59 @@ img/                imágenes WebP (inventario y prompts en el documento interno
 
 ## Incrustar en una web (iframe)
 
+Es el código que va en un bloque de código de senda.site:
+
 ```html
-<div class="senda-deck" style="position:relative;width:100%;aspect-ratio:16/9">
-  <iframe id="senda-deck" src="https://gerardgualarriaga.github.io/senda-leadership-program/"
-          title="Leadership Program de SENDA" allow="fullscreen" allowfullscreen loading="lazy"
-          style="position:absolute;inset:0;width:100%;height:100%;border:0"></iframe>
+<div class="senda-deck">
+  <iframe id="senda-deck"
+          src="https://gerardgualarriaga.github.io/senda-leadership-program/"
+          title="Leadership Program de SENDA"
+          allow="fullscreen" allowfullscreen loading="lazy"></iframe>
 </div>
+
 <style>
+  .senda-deck{
+    position:relative;
+    isolation:isolate;
+    width:100%;
+    aspect-ratio:16 / 9;
+    background:#0B0B0C;
+  }
+  .senda-deck iframe{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    border:0;
+    display:block;
+  }
+  /* Marco rosa desplazado tras la presentación */
+  @media (min-width:768px) and (min-aspect-ratio:6/5){
+    .senda-deck::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      transform:translate(18px, 18px);
+      border:1px solid #E95A7C;
+      z-index:-1;
+      pointer-events:none;
+    }
+  }
+  /* Móvil y tablet en vertical: altura del contenido (la ajusta el script) */
   @media (max-width:767px), (max-aspect-ratio:6/5){
-    .senda-deck{ aspect-ratio:auto !important; }
-    .senda-deck iframe{ position:static !important; height:100vh; }
+    .senda-deck{ aspect-ratio:auto; }
+    .senda-deck iframe{ position:static; height:100vh; }
   }
 </style>
+
 <script>
-  // En móvil la presentación envía su altura y el iframe se ajusta: sin doble scroll.
+  /* En móvil la presentación avisa de su altura y el bloque se ajusta a
+     ella: una sola barra de scroll, la de la página. */
   addEventListener('message', function (e) {
+    if (e.origin !== 'https://gerardgualarriaga.github.io') return;
     if (!e.data || e.data.type !== 'senda-deck:height' || !e.data.height) return;
     var f = document.getElementById('senda-deck');
-    if (getComputedStyle(f).position === 'static') f.style.height = e.data.height + 'px';
+    if (f && getComputedStyle(f).position === 'static') f.style.height = e.data.height + 'px';
   });
 </script>
 ```

@@ -120,6 +120,17 @@ a{ color:inherit; }
   border-radius:50%;
   background:var(--pink);
 }
+/* Eyebrow: rótulo de sección sobre el título, como en senda.site */
+.eyebrow{
+  font-size:var(--fs-label);
+  font-weight:500;
+  line-height:1.4;
+  letter-spacing:.2em;
+  text-transform:uppercase;
+  color:var(--pink);
+}
+.slide--pink .eyebrow{ color:var(--ink); opacity:.8; }
+.head{ display:flex; flex-direction:column; gap:.55rem; }
 .hint{
   font-size:var(--fs-label);
   font-weight:500;
@@ -229,10 +240,10 @@ a{ color:inherit; }
 }
 
 /* ── 01 · Portada ──────────────────────────────────────────────────────── */
-#s1{ justify-content:flex-end; min-height:100svh; padding-top:0; }
-#s1 .media--cover{ position:absolute; inset:0; margin:0; height:auto; }
-#s1 .title--cover, #s1 .logo--short{ z-index:1; }
-#s1 .figure--cover{
+#portada{ justify-content:flex-end; min-height:100svh; padding-top:0; }
+#portada .media--cover{ position:absolute; inset:0; margin:0; height:auto; }
+#portada .title--cover, #portada .logo--short{ z-index:1; }
+#portada .figure--cover{
   left:auto; right:-18%;
   height:100%;
   max-width:none;
@@ -240,8 +251,8 @@ a{ color:inherit; }
   opacity:.72;
   object-position:right bottom;
 }
-#s1 .logo--short{ position:absolute; top:1.4rem; right:var(--pad-x); width:4.4rem; }
-#s1 .title--cover{ color:var(--pink); position:relative; }
+#portada .logo--short{ position:absolute; top:1.4rem; right:var(--pad-x); width:4.4rem; }
+#portada .title--cover{ color:var(--pink); position:relative; }
 
 /* ── 03 · Pilares ──────────────────────────────────────────────────────── */
 .pillars{ display:flex; flex-direction:column; border-top:1px solid var(--hair-light); }
@@ -297,6 +308,21 @@ a{ color:inherit; }
 .ico .fill{ fill:var(--pink); stroke:none; }
 .ico .dash{ stroke-dasharray:.04 .03; }
 .ico--gears .gear{ transform-box:fill-box; transform-origin:center; }
+/* Sobre rosa, los iconos van en tinta */
+.slide--pink .ico{ stroke:var(--ink); }
+.slide--pink .ico .fill{ fill:var(--ink); }
+
+/* Iconos de los pilares dentro de un círculo, como los valores de senda.site:
+   el del pilar abierto se rellena de rosa y el trazo pasa a tinta. */
+.pillar .ico{
+  width:3rem; height:3rem;
+  padding:.62rem;
+  border:1.5px solid var(--pink);
+  border-radius:50%;
+  transition:background-color var(--t2) var(--ease), stroke var(--t2) var(--ease);
+}
+.pillar.is-open .ico{ background:var(--pink); stroke:var(--ink); }
+.pillar.is-open .ico .fill{ fill:var(--ink); }
 
 /* ── 04 / 16 · Capítulos ──────────────────────────────────────────────── */
 .slide--chapter{ justify-content:center; min-height:70svh; }
@@ -315,8 +341,8 @@ a{ color:inherit; }
 }
 
 /* ── 05 · Definición ──────────────────────────────────────────────────── */
-#s5{ justify-content:center; }
-#s5 .frame-line{ display:none; }
+#definicion{ justify-content:center; }
+#definicion .frame-line{ display:none; }
 .statement{
   font-size:var(--fs-statement);
   line-height:1.5;
@@ -332,7 +358,7 @@ a{ color:inherit; }
 .goal .ico{ width:3rem; height:3rem; }
 
 /* ── 09 · Tipografía cinética ─────────────────────────────────────────── */
-#s9{ min-height:88svh; justify-content:center; }
+#cinetica{ min-height:88svh; justify-content:center; }
 .kinetic{ position:relative; display:flex; flex-direction:column; gap:.4rem; }
 .k{ font-weight:700; text-transform:uppercase; line-height:1; }
 .k-learning,.k-experiencial,.k-diseno{ font-size:var(--fs-k); letter-spacing:.14em; }
@@ -429,13 +455,87 @@ a{ color:inherit; }
 }
 
 /* ── 18 · 100 % ───────────────────────────────────────────────────────── */
-#s18 .crop{ position:absolute; left:3%; right:30%; top:0; bottom:0; overflow:hidden; }
-#s18 .figure--dj{ position:absolute; left:0; top:0; width:100%; height:auto; max-width:none; }
+#manifiesto .crop{ position:absolute; left:3%; right:30%; top:0; bottom:0; overflow:hidden; }
+#manifiesto .figure--dj{ position:absolute; left:0; top:0; width:100%; height:auto; max-width:none; }
 .manifest__num{ font-weight:700; font-size:var(--fs-k-big); line-height:.85; letter-spacing:-.04em; color:var(--pink); font-variant-numeric:tabular-nums; }
 .manifest__words{ display:flex; flex-direction:column; gap:.35em; margin-top:1rem; }
 .manifest__words li{ font-weight:700; font-size:var(--fs-manifest); letter-spacing:.14em; text-transform:uppercase; }
 
-/* ── 19 · Equipo ──────────────────────────────────────────────────────── */
+/* ── 24 · Estructura ──────────────────────────────────────────────────── */
+.figs{ display:grid; grid-template-columns:1fr 1fr; gap:1.2rem; }
+.fig{ display:flex; flex-direction:column; gap:.3rem; }
+.fig__num{
+  font-weight:700;
+  font-size:var(--fs-k-big);
+  line-height:.85;
+  letter-spacing:-.04em;
+  color:var(--pink);
+  font-variant-numeric:tabular-nums;
+}
+.fig__label{
+  font-size:var(--fs-label);
+  font-weight:500;
+  letter-spacing:.16em;
+  text-transform:uppercase;
+  max-width:14em;
+}
+.facts{ display:flex; flex-direction:column; border-top:1px solid var(--hair-light); }
+.fact{ padding:.85rem 0; border-bottom:1px solid var(--hair-light); }
+.fact dt{
+  font-size:var(--fs-label);
+  font-weight:500;
+  letter-spacing:.16em;
+  text-transform:uppercase;
+  color:var(--pink);
+  margin-bottom:.2rem;
+}
+.fact dd{ margin:0; text-wrap:pretty; }
+.sessions{ display:grid; grid-template-columns:repeat(7, 1fr); gap:.3rem; }
+.session{
+  position:relative;
+  overflow:hidden;
+  display:flex; flex-direction:column; justify-content:space-between;
+  min-height:3.6rem;
+  padding:.45rem .5rem;
+  border:1px solid var(--hair-light);
+}
+/* Barra rosa en la base de cada sesión: se llenan una tras otra */
+.session__fill{
+  position:absolute; left:0; right:0; bottom:0;
+  height:4px;
+  background:var(--pink);
+  transform-origin:left center;
+}
+.session__n{ font-weight:700; font-size:.9rem; line-height:1; color:var(--pink); }
+.session__h{ font-weight:300; font-size:.8rem; line-height:1; }
+
+/* ── 25 · Clientes ────────────────────────────────────────────────────── */
+/* Los mismos logos en gris de la web; multiply disuelve el fondo blanco
+   del archivo sobre el blanco nieve de la diapositiva. */
+.logos{
+  display:grid;
+  grid-template-columns:repeat(3, minmax(0, 1fr));
+  border-top:1px solid var(--hair-dark);
+  border-left:1px solid var(--hair-dark);
+}
+.logos li{
+  min-width:0;
+  display:grid; place-items:center;
+  aspect-ratio:3 / 2;
+  border-right:1px solid var(--hair-dark);
+  border-bottom:1px solid var(--hair-dark);
+}
+.logos img{
+  width:72%; height:auto;
+  max-height:90%;
+  object-fit:contain;
+  mix-blend-mode:multiply;
+  opacity:.72;
+  transition:opacity var(--t1) ease, transform var(--t2) var(--ease);
+}
+@media (hover:hover){ .logos li:hover img{ opacity:1; transform:scale(1.06); } }
+
+/* ── 26 · Equipo ──────────────────────────────────────────────────────── */
 .team{ display:grid; grid-template-columns:1fr 1fr; gap:2rem 1rem; }
 .member{ display:flex; flex-direction:column; align-items:center; text-align:center; }
 .member__photo{ position:relative; width:100%; aspect-ratio:4 / 5; margin-bottom:.9rem; }
@@ -463,8 +563,8 @@ a{ color:inherit; }
 .member__link:hover{ text-decoration-color:var(--pink); color:var(--pink); }
 
 /* ── 20 · Contacto ────────────────────────────────────────────────────── */
-#s20{ min-height:90svh; justify-content:space-between; }
-#s20 .logo--full{ width:15rem; align-self:flex-end; }
+#contacto{ min-height:90svh; justify-content:space-between; }
+#contacto .logo--full{ width:15rem; align-self:flex-end; }
 .contact-claim{ font-weight:700; font-size:clamp(2.6rem, 13vw, 5.2rem); line-height:.9; letter-spacing:-.02em; text-transform:uppercase; color:var(--white); }
 .contact-claim .dot{ color:var(--pink); }
 .contact{ display:flex; flex-direction:column; gap:.35em; font-size:1.25rem; }
@@ -579,6 +679,25 @@ html.is-flow #prev, html.is-flow #next{ display:none; }
   html.js .bullets--dense{ font-size:1.26cqw; gap:.3cqw; }
   html.js .label{ font-size:.95cqw; }
   html.js .hint{ font-size:.9cqw; }
+  html.js .eyebrow{ font-size:.95cqw; }
+  html.js .head{ gap:.7cqw; }
+  /* En los bloques de texto el eyebrow va más pegado al título que el resto */
+  html.js .text > .eyebrow{ margin-bottom:-.9cqw; }
+  html.js .eyebrow--cover{ font-size:1.15cqw; color:#fff; opacity:.86; }
+  html.js .eyebrow--frame{ background:var(--bg); padding:0 1.2cqw; z-index:1; }
+
+  /* Trama de puntos rosa en una esquina libre de las diapositivas claras: el
+     mismo recurso que los bloques blancos de senda.site. */
+  html.js .slide--light:not(#cinetica):not(#clientes)::after{
+    content:"";
+    position:absolute;
+    top:2.4cqw; right:2.4cqw;
+    width:6.6cqw; height:3.8cqw;
+    background-image:radial-gradient(circle, var(--pink) 0 .17cqw, transparent .2cqw);
+    background-size:1.1cqw 1.1cqw;
+    opacity:.5;
+    pointer-events:none;
+  }
 
   /* Recursos editoriales */
   html.js .rule{ margin:.4cqw 0 .6cqw; }
@@ -601,11 +720,11 @@ html.is-flow #prev, html.is-flow #next{ display:none; }
   /* 01 · Portada */
   /* Sin z-index: un contexto de apilamiento propio impediría que la foto se
      fundiese (lighten) con el fondo de la diapositiva. */
-  html.js #s1 .media--cover{ position:absolute; inset:0; }
-  html.js #s1 .title--cover, html.js #s1 .logo--short{ z-index:1; }
-  html.js #s1 .figure--cover{ right:calc(var(--r) * 1cqw); left:auto; top:calc(var(--y) * 1cqw); bottom:auto; height:calc(var(--h) * 1cqw); width:auto; opacity:1; }
-  html.js #s1 .logo--short{ width:8.6cqw; }
-  html.js #s1 .title--cover{ top:19.5cqw; }
+  html.js #portada .media--cover{ position:absolute; inset:0; }
+  html.js #portada .title--cover, html.js #portada .logo--short{ z-index:1; }
+  html.js #portada .figure--cover{ right:calc(var(--r) * 1cqw); left:auto; top:calc(var(--y) * 1cqw); bottom:auto; height:calc(var(--h) * 1cqw); width:auto; opacity:1; }
+  html.js #portada .logo--short{ width:8.6cqw; }
+  html.js #portada .title--cover{ top:19.5cqw; }
 
   /* 03 · Pilares */
   html.js .pillars{ gap:0; }
@@ -619,6 +738,9 @@ html.is-flow #prev, html.is-flow #next{ display:none; }
   html.js .plain{ font-size:1.2cqw; line-height:1.5; gap:0; }
   html.js .plain--2col{ grid-template-columns:1fr 1fr; column-gap:2cqw; }
   html.js .ico{ width:4cqw; height:4cqw; }
+  html.js .pillar .ico{ width:4.6cqw; height:4.6cqw; padding:.95cqw; border-width:.11cqw; }
+  /* El texto del pilar arranca a la altura del nombre, no del número */
+  html.js .pillar__panel > p{ padding-left:11.6cqw; }
 
   /* 04 / 16 · Capítulos */
   /* El tamaño lo calcula el JS (fitGiants): cada línea ocupa justo el ancho
@@ -627,10 +749,10 @@ html.is-flow #prev, html.is-flow #next{ display:none; }
   html.js .giant__line{ font-size:19.4cqw; line-height:.86; letter-spacing:-.05em; margin-left:-.055em; }
 
   /* 05 · Definición */
-  html.js #s5 .frame-line{ display:block; overflow:visible; }
+  html.js #definicion .frame-line{ display:block; overflow:visible; }
   /* viewBox a escala 1 unidad = 0,1 cqw: el trazo escala con el marco */
-  html.js #s5 .frame-line rect{ fill:none; stroke:var(--pink); stroke-width:5; }
-  html.js .statement{ border:0; padding:0; font-size:2.3cqw; line-height:1.55; }
+  html.js #definicion .frame-line rect{ fill:none; stroke:var(--pink); stroke-width:5; }
+  html.js .statement{ border:0; padding:0; font-size:2.15cqw; line-height:1.55; }
 
   /* 08 · Objetivos */
   html.js .goals{ grid-template-columns:repeat(3, 1fr); grid-template-rows:1fr 1fr; gap:2.6cqw 4cqw; }
@@ -654,7 +776,9 @@ html.is-flow #prev, html.is-flow #next{ display:none; }
   /* 10 · Fases */
   html.js .timeline__line{ display:block; position:absolute; left:0; right:0; top:15.2cqw; width:100%; height:2cqw; overflow:visible; }
   html.js .timeline__line path{ stroke:var(--pink); stroke-width:2.2; fill:none; }
-  html.js .phases{ position:absolute; inset:0; display:grid; grid-template-columns:repeat(5, 1fr); border:0; margin:0; padding:0 4.2cqw; }
+  /* Tantas columnas como áreas (--n en el HTML); 2 cqw de margen a cada lado.
+     Si cambia el número, ajusta también el trazo de .timeline__line. */
+  html.js .phases{ position:absolute; inset:0; display:grid; grid-template-columns:repeat(var(--n, 5), 1fr); border:0; margin:0; padding:0 2cqw; }
   html.js .phase{
     height:100%;
     display:flex; flex-direction:column; align-items:center; justify-content:flex-end;
@@ -662,7 +786,7 @@ html.is-flow #prev, html.is-flow #next{ display:none; }
     padding:0 0 8.4cqw;
     text-align:center;
   }
-  html.js .phase__name{ font-size:1.36cqw; line-height:1.3; max-width:16cqw; text-wrap:balance; }
+  html.js .phase__name{ font-size:1.3cqw; line-height:1.3; max-width:11.6cqw; text-wrap:balance; }
   html.js .phase{ position:relative; }
   html.js .phase__num{ position:absolute; left:0; right:0; top:19.4cqw; font-size:2.3cqw; font-weight:300; line-height:1; }
   html.js .phase__node{
@@ -681,14 +805,34 @@ html.is-flow #prev, html.is-flow #next{ display:none; }
   html.js .phase-nav .phase-nav__back{ font-size:.78cqw; padding:0 1cqw; }
 
   /* 18 · 100 % */
-  html.js #s18 .crop{ left:calc(var(--x) * 1cqw); right:auto; }
-  html.js #s18 .figure--dj{ height:100%; width:auto; left:50%; margin-left:-21cqw; }
+  html.js #manifiesto .crop{ left:calc(var(--x) * 1cqw); right:auto; }
+  html.js #manifiesto .figure--dj{ height:100%; width:auto; left:50%; margin-left:-21cqw; }
   html.js .manifest{ display:flex; flex-direction:column; justify-content:center; }
   html.js .manifest__num{ font-size:18.5cqw; line-height:.95; }
   html.js .manifest__words{ gap:1.2cqw; margin-top:2cqw; }
   html.js .manifest__words li{ font-size:3.35cqw; letter-spacing:.12em; line-height:1.1; }
 
-  /* 19 · Equipo */
+  /* 24 · Estructura */
+  html.js .figs{ grid-template-columns:1fr; gap:2.6cqw; }
+  html.js .fig{ flex-direction:row; align-items:flex-end; gap:1.6cqw; }
+  html.js .fig__num{ font-size:11.5cqw; line-height:.8; min-width:15cqw; }
+  html.js .fig__label{ font-size:1.15cqw; padding-bottom:.4cqw; }
+  html.js .fact{ padding:1.05cqw 0; }
+  html.js .fact dt{ font-size:.95cqw; margin-bottom:.25cqw; }
+  html.js .fact dd{ font-size:1.42cqw; line-height:1.5; }
+  html.js .sessions{ gap:.6cqw; }
+  html.js .session{ min-height:0; padding:.9cqw 1cqw; border-width:1px; }
+  html.js .session__n{ font-size:1.5cqw; }
+  html.js .session__h{ font-size:1.15cqw; }
+  html.js .session__fill{ height:.32cqw; }
+
+  /* 25 · Clientes */
+  /* Filas con mínimo 0: la altura de la imagen no puede estirar la rejilla */
+  html.js .logos{ grid-template-columns:repeat(5, minmax(0, 1fr)); grid-template-rows:repeat(4, minmax(0, 1fr)); }
+  html.js .logos li{ aspect-ratio:auto; min-height:0; overflow:hidden; }
+  html.js .logos img{ width:auto; height:78%; max-width:66%; }
+
+  /* 26 · Equipo */
   html.js .team{ grid-template-columns:repeat(4, 1fr); gap:3cqw; align-items:end; }
   html.js .member__photo{ aspect-ratio:auto; height:29.5cqw; width:100%; margin-bottom:1.5cqw; }
   html.js .member__block{ left:16%; right:16%; top:24%; }
@@ -696,7 +840,7 @@ html.is-flow #prev, html.is-flow #next{ display:none; }
   html.js .member__link{ font-size:1cqw; margin-top:.3cqw; }
 
   /* 20 · Contacto */
-  html.js #s20 .logo--full{ width:26cqw; }
+  html.js #contacto .logo--full{ width:26cqw; }
   html.js .contact-claim{ font-size:9cqw; }
   html.js .contact{ font-size:2.2cqw; gap:.2cqw; }
 
@@ -727,15 +871,15 @@ html.is-flow #prev, html.is-flow #next{ display:none; }
   .grain{ display:none; }
   .slide--phase{ padding-top:4rem; }
   .hud__bar{ background:rgba(11,11,12,.8); }
-  #s7 .media{ order:-1; }
+  #dirigido .media{ order:-1; }
 
   /* Dentro de un iframe que se ajusta a la altura del contenido, las alturas
      en svh crecerían con él sin fin: se sustituyen por medidas en vw. */
   html.is-embedded .hud{ display:none; }
-  html.is-embedded #s1{ min-height:min(190vw, 52rem); }
+  html.is-embedded #portada{ min-height:min(190vw, 52rem); }
   html.is-embedded .slide--chapter{ min-height:min(130vw, 36rem); }
-  html.is-embedded #s9{ min-height:min(170vw, 46rem); }
-  html.is-embedded #s20{ min-height:min(180vw, 48rem); }
+  html.is-embedded #cinetica{ min-height:min(170vw, 46rem); }
+  html.is-embedded #contacto{ min-height:min(180vw, 48rem); }
 }
 @media (min-width:560px) and (max-width:767px){
   .team{ grid-template-columns:repeat(4, 1fr); }
